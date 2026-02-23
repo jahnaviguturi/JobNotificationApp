@@ -7,12 +7,15 @@
     /* COLOR SYSTEM */
     --color-bg: #F7F6F3;
     --color-text-primary: #111111;
-    --color-accent: #8B0000; /* Deep Red */
-    --color-success: #507D50; /* Muted Green */
-    --color-warning: #B58900; /* Muted Amber */
+    --color-accent: #8B0000;
+    /* Deep Red */
+    --color-success: #507D50;
+    /* Muted Green */
+    --color-warning: #B58900;
+    /* Muted Amber */
     --color-border: rgba(17, 17, 17, 0.1);
     --color-border-focus: rgba(139, 0, 0, 0.5);
-    
+
     /* SPACING SYSTEM */
     --space-1: 8px;
     --space-2: 16px;
@@ -52,7 +55,10 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
     font-family: var(--font-heading);
     font-weight: 700;
     line-height: 1.2;
@@ -76,7 +82,7 @@ h1, h2, h3, h4 {
     background: var(--color-bg);
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 1000;
 }
 
 .app-name {
@@ -92,32 +98,134 @@ h1, h2, h3, h4 {
     justify-content: center;
 }
 
-.progress-indicator {
+/* NAVIGATION */
+.nav-links {
+    list-style: none;
     display: flex;
+    gap: var(--space-3);
+    padding: 0;
+    margin: 0;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: var(--color-text-primary);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 4px 0;
+    position: relative;
+    opacity: 0.6;
+    transition: opacity var(--transition-speed);
+}
+
+.nav-link:hover {
+    opacity: 1;
+}
+
+.nav-link.active {
+    opacity: 1;
+}
+
+.nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--color-accent);
+}
+
+.top-bar-right {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+/* MOBILE MENU TOGGLE */
+.mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    position: relative;
+    z-index: 1100;
+}
+
+.hamburger {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: var(--color-text-primary);
+    position: relative;
+    transition: background 0.2s;
+}
+
+.hamburger::before,
+.hamburger::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 2px;
+    background: var(--color-text-primary);
+    left: 0;
+    transition: transform 0.2s;
+}
+
+.hamburger::before {
+    top: -6px;
+}
+
+.hamburger::after {
+    bottom: -6px;
+}
+
+.mobile-menu-toggle.open .hamburger {
+    background: transparent;
+}
+
+.mobile-menu-toggle.open .hamburger::before {
+    transform: translateY(6px) rotate(45deg);
+}
+
+.mobile-menu-toggle.open .hamburger::after {
+    transform: translateY(-6px) rotate(-45deg);
+}
+
+/* MOBILE NAV DRAWER */
+.mobile-nav {
+    position: fixed;
+    top: 64px;
+    left: 0;
+    width: 100%;
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    padding: var(--space-3);
+    transform: translateY(-100%);
+    opacity: 0;
+    transition: transform 0.3s, opacity 0.3s;
+    z-index: 900;
+    display: none;
+}
+
+.mobile-nav.open {
+    transform: translateY(0);
+    opacity: 1;
+    display: block;
+}
+
+.mobile-nav .nav-links {
     flex-direction: column;
     align-items: center;
-    gap: 4px;
-    width: 200px;
+    gap: var(--space-2);
 }
 
-.step-label {
-    font-size: 12px;
-    font-weight: 500;
-    opacity: 0.6;
-}
-
-.progress-bar-container {
+.mobile-nav .nav-link {
+    font-size: 18px;
     width: 100%;
-    height: 4px;
-    background: var(--color-border);
-    border-radius: 2px;
-    overflow: hidden;
-}
-
-.progress-bar {
-    height: 100%;
-    background: var(--color-accent);
-    transition: width var(--transition-speed) var(--transition-ease);
+    text-align: center;
+    padding: 12px 0;
 }
 
 .status-badge {
@@ -346,11 +454,6 @@ h1, h2, h3, h4 {
     margin-top: var(--space-3);
 }
 
-.button-group {
-    display: flex;
-    gap: var(--space-1);
-}
-
 .status-indicator {
     display: flex;
     flex-direction: column;
@@ -362,12 +465,16 @@ h1, h2, h3, h4 {
     .main-layout {
         grid-template-columns: 1fr;
     }
-    
+
     .headline {
         font-size: 32px;
     }
-    
-    .top-bar-center {
+
+    .desktop-nav {
         display: none;
+    }
+
+    .mobile-menu-toggle {
+        display: block;
     }
 }
