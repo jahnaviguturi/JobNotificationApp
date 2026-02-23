@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Notification App | Design System</title>
+    <meta name="description" content="Premium SaaS Design System Foundation for a Job Notification App. Built for clarity, confidence, and intentionality.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- TOP BAR -->
+        <header class="top-bar" id="top-bar">
+            <div class="top-bar-left">
+                <span class="app-name">Job Notification App</span>
+            </div>
+            <div class="top-bar-center">
+                <div class="progress-indicator">
+                    <span class="step-label">Step 1 / 4</span>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" style="width: 25%;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="top-bar-right">
+                <span class="status-badge status-in-progress">In Progress</span>
+            </div>
+        </header>
+
+        <!-- CONTEXT HEADER -->
+        <section class="context-header" id="context-header">
+            <div class="container">
+                <h1 class="headline">Design System Foundation</h1>
+                <p class="subtext">Establishing the core principles and visual language for a calm, intentional workspace.</p>
+            </div>
+        </section>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="main-layout container">
+            <!-- PRIMARY WORKSPACE (70%) -->
+            <div class="primary-workspace" id="primary-workspace">
+                <div class="card">
+                    <h2 class="card-title">Typography & Colors</h2>
+                    <p class="card-description">Our visual identity is defined by a limited palette and confident serif headings. This ensures clarity and reduces cognitive load.</p>
+                    
+                    <div class="demo-grid">
+                        <div class="demo-item">
+                            <h3>Buttons</h3>
+                            <div class="button-group">
+                                <button class="btn btn-primary">Primary Action</button>
+                                <button class="btn btn-secondary">Secondary Action</button>
+                            </div>
+                        </div>
+                        <div class="demo-item">
+                            <h3>Inputs</h3>
+                            <div class="form-group">
+                                <label for="demo-input">Example Field</label>
+                                <input type="text" id="demo-input" placeholder="Enter notification parameters..." class="input-base">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title">Project Configuration</h2>
+                    <p class="card-description">All workspace components follow a strict 8px spacing scale to maintain visual rhythm.</p>
+                    
+                    <div class="demo-grid">
+                        <div class="demo-item">
+                            <div class="status-indicator">
+                                <span class="badge success">Success: System Operational</span>
+                                <span class="badge warning">Warning: Pending Updates</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECONDARY PANEL (30%) -->
+            <aside class="secondary-panel" id="secondary-panel">
+                <div class="panel-section">
+                    <h3 class="panel-title">System Overview</h3>
+                    <p class="panel-text">This design system is built to convey authority and precision. Use high-contrast text and generous whitespace to guide the user's attention.</p>
+                </div>
+                
+                <div class="panel-section">
+                    <h3 class="panel-title">Copyable Prompt</h3>
+                    <div class="prompt-box">
+                        <code id="prompt-content">Initialize system with deep-red accent and off-white background.</code>
+                    </div>
+                    <button class="btn btn-secondary btn-full" onclick="copyPrompt()">Copy Prompt</button>
+                </div>
+
+                <div class="panel-section">
+                    <button class="btn btn-primary btn-full">Submit Configuration</button>
+                </div>
+            </aside>
+        </main>
+
+        <!-- PROOF FOOTER -->
+        <footer class="proof-footer" id="proof-footer">
+            <div class="container footer-content">
+                <div class="checklist">
+                    <div class="checklist-item">
+                        <input type="checkbox" id="ui-built" checked disabled>
+                        <label for="ui-built">UI Built</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="logic-working" disabled>
+                        <label for="logic-working">Logic Working</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="test-passed" disabled>
+                        <label for="test-passed">Test Passed</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="deployed" disabled>
+                        <label for="deployed">Deployed</label>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <script src="main.js"></script>
+</body>
+</html>
