@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Notification App | Design System</title>
+    <title>Job Notification App</title>
     <meta name="description"
         content="Premium SaaS Design System Foundation for a Job Notification App. Built for clarity, confidence, and intentionality.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,69 +20,50 @@
         <!-- TOP BAR -->
         <header class="top-bar" id="top-bar">
             <div class="top-bar-left">
-                <span class="app-name">Job Notification App</span>
+                <a href="/" class="app-logo-link">
+                    <span class="app-name">Job Notification App</span>
+                </a>
             </div>
 
-            <nav class="top-bar-center desktop-nav">
+            <button class="menu-toggle" id="menu-toggle" aria-label="Toggle Menu">
+                <span class="hamburger"></span>
+            </button>
+
+            <nav class="top-nav" id="top-nav">
                 <ul class="nav-links">
-                    <li><a href="/dashboard" class="nav-link" data-route="dashboard">Dashboard</a></li>
-                    <li><a href="/saved" class="nav-link" data-route="saved">Saved</a></li>
-                    <li><a href="/digest" class="nav-link" data-route="digest">Digest</a></li>
-                    <li><a href="/settings" class="nav-link" data-route="settings">Settings</a></li>
-                    <li><a href="/proof" class="nav-link" data-route="proof">Proof</a></li>
+                    <li><a href="/dashboard" class="nav-link" data-link>Dashboard</a></li>
+                    <li><a href="/saved" class="nav-link" data-link>Saved</a></li>
+                    <li><a href="/digest" class="nav-link" data-link>Digest</a></li>
+                    <li><a href="/settings" class="nav-link" data-link>Settings</a></li>
+                    <li><a href="/proof" class="nav-link" data-link>Proof</a></li>
                 </ul>
             </nav>
 
             <div class="top-bar-right">
                 <span class="status-badge status-in-progress">In Progress</span>
-                <button class="mobile-menu-toggle" aria-label="Toggle Navigation">
-                    <span class="hamburger"></span>
-                </button>
             </div>
         </header>
 
-        <!-- MOBILE NAV -->
-        <nav class="mobile-nav" id="mobile-nav">
-            <ul class="nav-links">
-                <li><a href="/dashboard" class="nav-link" data-route="dashboard">Dashboard</a></li>
-                <li><a href="/saved" class="nav-link" data-route="saved">Saved</a></li>
-                <li><a href="/digest" class="nav-link" data-route="digest">Digest</a></li>
-                <li><a href="/settings" class="nav-link" data-route="settings">Settings</a></li>
-                <li><a href="/proof" class="nav-link" data-route="proof">Proof</a></li>
-            </ul>
-        </nav>
-
-        <div id="route-container">
-            <!-- DYNAMIC CONTENT INJECTED HERE -->
-            <!-- CONTEXT HEADER -->
-            <section class="context-header" id="context-header">
-                <div class="container">
-                    <h1 class="headline" id="page-title">Loading...</h1>
-                    <p class="subtext" id="page-subtext">Initializing the premium experience.</p>
-                </div>
-            </section>
-
-            <!-- MAIN CONTENT AREA -->
-            <main class="main-layout container" id="main-content">
-                <!-- CONTENT WILL BE REMOVED/REPLACED BY JS -->
-            </main>
+        <!-- ROUTE OUTLET -->
+        <div id="page-content">
+            <!-- Content injected by main.js -->
         </div>
 
-        <!-- PROOF FOOTER -->
+        <!-- SHARED PROOF FOOTER -->
         <footer class="proof-footer" id="proof-footer">
             <div class="container footer-content">
                 <div class="checklist">
                     <div class="checklist-item">
                         <input type="checkbox" id="ui-built" checked disabled>
-                        <label for="ui-built">UI Built</label>
+                        <label for="ui-built">UI Shell Built</label>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="routing-working" checked disabled>
+                        <label for="routing-working">Routing Working</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="logic-working" disabled>
                         <label for="logic-working">Logic Working</label>
-                    </div>
-                    <div class="checklist-item">
-                        <input type="checkbox" id="test-passed" disabled>
-                        <label for="test-passed">Test Passed</label>
                     </div>
                     <div class="checklist-item">
                         <input type="checkbox" id="deployed" disabled>

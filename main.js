@@ -1,10 +1,10 @@
 /**
- * Job Notification App - SPA Router & Design System Shell
+ * Job Notification App - SPA Router & Design System Logic
  */
 
 const routes = {
     '/': {
-        title: 'Home',
+        title: 'Design System Foundation',
         subtext: 'Establishing the core principles and visual language for a calm, intentional workspace.'
     },
     '/dashboard': {
@@ -24,7 +24,7 @@ const routes = {
         subtext: 'This section will be built in the next step.'
     },
     '/proof': {
-        title: 'Proof of Concept',
+        title: 'Validation Proof',
         subtext: 'This section will be built in the next step.'
     }
 };
@@ -34,112 +34,90 @@ const navigateTo = (url) => {
     router();
 };
 
-const router = () => {
+const router = async () => {
     const path = window.location.pathname;
-    // For local file testing (e.g. index.html) or actual routing
-    // If it's a local file, we might need to handle it differently, 
-    // but the user's request implies a web app structure.
-    // Let's assume standard routing or handle the root properly.
+    const route = routes[path] || {
+        title: 'Page Not Found',
+        subtext: 'The page you are looking for does not exist.',
+        isError: true
+    };
 
-    let route = routes[path] || routes['/']; // Default to home for unknown if desired, but 404 is requested
+    const container = document.getElementById('page-content');
 
-    // Check if it's a 404
-    const isKnownRoute = Object.keys(routes).includes(path);
-
-    if (!isKnownRoute && path !== '/index.html') {
-        render404();
-        updateActiveLinks(null);
-        return;
+    if (route.isError) {
+        container.innerHTML = `
+            <section class="error-page container">
+                <h1 class="headline">${route.title}</h1>
+                <p class="subtext">${route.subtext}</p>
+                <div style="margin-top: 40px;">
+                    <a href="/" class="btn btn-primary" data-link>Return Home</a>
+                </div>
+            </section>
+        `;
+    } else {
+        container.innerHTML = `
+            <section class="context-header">
+                <div class="container">
+                    <h1 class="headline">${route.title}</h1>
+                    <p class="subtext">${route.subtext}</p>
+                </div>
+            </section>
+            <main class="main-layout container">
+                <div class="primary-workspace">
+                    <div class="card">
+                        <h2 class="card-title">Coming Soon</h2>
+                        <p class="card-description">The infrastructure and features for the ${route.title} are scheduled for the next implementation phase.</p>
+                    </div>
+                </div>
+                <aside class="secondary-panel">
+                    <div class="panel-section">
+                        <h3 class="panel-title">Status</h3>
+                        <p class="panel-text">This route is part of the initial skeleton. Business logic will be injected here during the feature development step.</p>
+                    </div>
+                </aside>
+            </main>
+        `;
     }
 
-    if (path === '/index.html') route = routes['/'];
-
-    renderPage(route);
-    updateActiveLinks(path === '/index.html' ? '/' : path);
-    window.scrollTo(0, 0);
+    updateActiveLinks();
 };
 
-const renderPage = (route) => {
-    const titleEl = document.getElementById('page-title');
-    const subtextEl = document.getElementById('page-subtext');
-    const mainContentEl = document.getElementById('main-content');
-
-    if (titleEl) titleEl.textContent = route.title;
-    if (subtextEl) subtextEl.textContent = route.subtext;
-
-    // Clear main content as per "No additional content" rule
-    if (mainContentEl) mainContentEl.innerHTML = `
-        <div class="primary-workspace">
-            <div class="card" style="border: 1px dashed var(--color-border); opacity: 0.5; height: 300px; display: flex; align-items: center; justify-content: center;">
-                <p>Placeholder for ${route.title} Module</p>
-            </div>
-        </div>
-        <aside class="secondary-panel">
-            <div class="panel-section">
-                <h3 class="panel-title">Context</h3>
-                <p class="panel-text">Additional information related to ${route.title} will appear here.</p>
-            </div>
-        </aside>
-    `;
-};
-
-const render404 = () => {
-    const titleEl = document.getElementById('page-title');
-    const subtextEl = document.getElementById('page-subtext');
-    const mainContentEl = document.getElementById('main-content');
-
-    if (titleEl) titleEl.textContent = 'Page Not Found';
-    if (subtextEl) subtextEl.textContent = 'The page you are looking for does not exist.';
-    if (mainContentEl) mainContentEl.innerHTML = '';
-};
-
-const updateActiveLinks = (path) => {
+const updateActiveLinks = () => {
+    const path = window.location.pathname;
     document.querySelectorAll('.nav-link').forEach(link => {
         link.classList.remove('active');
-        const href = link.getAttribute('href');
-        if (href === path) {
+        if (link.getAttribute('href') === path) {
             link.classList.add('active');
         }
     });
 };
 
-// Mobile Menu Toggle logic
-const initMobileMenu = () => {
-    const toggle = document.querySelector('.mobile-menu-toggle');
-    const mobileNav = document.getElementById('mobile-nav');
-
-    if (toggle && mobileNav) {
-        toggle.addEventListener('click', () => {
-            toggle.classList.toggle('open');
-            mobileNav.classList.toggle('open');
-            document.body.style.overflow = mobileNav.classList.contains('open') ? 'hidden' : '';
-        });
-
-        // Close menu on link click
-        mobileNav.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', () => {
-                toggle.classList.remove('open');
-                mobileNav.classList.remove('open');
-                document.body.style.overflow = '';
-            });
-        });
-    }
-};
-
 document.addEventListener('DOMContentLoaded', () => {
-    // Intercept clicks on nav-links
-    document.body.addEventListener('click', (e) => {
-        if (e.target.matches('[data-route]')) {
+    // Intercept clicks for routing
+    document.body.addEventListener('click', e => {
+        if (e.target.matches('[data-link]')) {
             e.preventDefault();
-            navigateTo(e.target.getAttribute('href'));
-        } else if (e.target.closest('[data-route]')) {
-            e.preventDefault();
-            navigateTo(e.target.closest('[data-route]').getAttribute('href'));
+            navigateTo(e.target.href);
+            // Close mobile menu if open
+            document.getElementById('top-nav').classList.remove('active');
+            document.getElementById('menu-toggle').classList.remove('active');
         }
     });
 
+    // Mobile menu toggle
+    const menuToggle = document.getElementById('menu-toggle');
+    const topNav = document.getElementById('top-nav');
+
+    if (menuToggle && topNav) {
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            topNav.classList.toggle('active');
+        });
+    }
+
+    // Handle back/forward buttons
     window.addEventListener('popstate', router);
 
-    initMobileMenu();
+    // Initial route
     router();
 });
