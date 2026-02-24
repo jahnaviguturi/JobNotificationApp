@@ -1,31 +1,124 @@
 /**
- * Job Notification App - SPA Router & Design System Logic
+ * Job Notification Tracker - SPA Router & Application Logic
  */
 
 const routes = {
     '/': {
-        title: 'Design System Foundation',
-        subtext: 'Establishing the core principles and visual language for a calm, intentional workspace.'
+        render: () => `
+            <section class="hero container">
+                <h1 class="headline">Stop Missing The Right Jobs.</h1>
+                <p class="subtext">Precision-matched job discovery delivered daily at 9AM.</p>
+                <div class="cta-area">
+                    <a href="/settings" class="btn btn-primary" data-link>Start Tracking</a>
+                </div>
+            </section>
+        `
     },
     '/dashboard': {
-        title: 'Dashboard',
-        subtext: 'This section will be built in the next step.'
-    },
-    '/saved': {
-        title: 'Saved Jobs',
-        subtext: 'This section will be built in the next step.'
-    },
-    '/digest': {
-        title: 'Job Digest',
-        subtext: 'This section will be built in the next step.'
+        render: () => `
+            <section class="context-header">
+                <div class="container">
+                    <h1 class="headline">Dashboard</h1>
+                    <p class="subtext">Your personalized job matches and tracking overview.</p>
+                </div>
+            </section>
+            <main class="container">
+                <div class="empty-state">
+                    <h2 class="empty-state-title">No jobs yet.</h2>
+                    <p class="empty-state-text">In the next step, you will load a realistic dataset to see matches here.</p>
+                </div>
+            </main>
+        `
     },
     '/settings': {
-        title: 'Settings',
-        subtext: 'This section will be built in the next step.'
+        render: () => `
+            <section class="context-header">
+                <div class="container">
+                    <h1 class="headline">Settings</h1>
+                    <p class="subtext">Configure your search preferences and notification parameters.</p>
+                </div>
+            </section>
+            <main class="container">
+                <div class="card">
+                    <h2 class="card-title">Preference Profile</h2>
+                    <div class="settings-grid">
+                        <div class="form-group form-group-full">
+                            <label for="role-keywords">Role Keywords</label>
+                            <input type="text" id="role-keywords" class="input-base" placeholder="e.g. Senior Frontend Engineer, Product Designer">
+                        </div>
+                        <div class="form-group">
+                            <label for="location">Preferred Locations</label>
+                            <input type="text" id="location" class="input-base" placeholder="e.g. San Francisco, Remote">
+                        </div>
+                        <div class="form-group">
+                            <label for="work-mode">Mode</label>
+                            <select id="work-mode" class="input-base">
+                                <option value="remote">Remote</option>
+                                <option value="hybrid">Hybrid</option>
+                                <option value="onsite">Onsite</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="experience">Experience Level</label>
+                            <select id="experience" class="input-base">
+                                <option value="entry">Entry Level</option>
+                                <option value="mid">Mid Level</option>
+                                <option value="senior">Senior Level</option>
+                                <option value="lead">Lead / Principal</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        `
+    },
+    '/saved': {
+        render: () => `
+            <section class="context-header">
+                <div class="container">
+                    <h1 class="headline">Saved Jobs</h1>
+                    <p class="subtext">Your collection of high-interest opportunities.</p>
+                </div>
+            </section>
+            <main class="container">
+                <div class="empty-state">
+                    <h2 class="empty-state-title">Your collection is empty.</h2>
+                    <p class="empty-state-text">Jobs you save from the dashboard will appear here for later review.</p>
+                </div>
+            </main>
+        `
+    },
+    '/digest': {
+        render: () => `
+            <section class="context-header">
+                <div class="container">
+                    <h1 class="headline">Daily Digest</h1>
+                    <p class="subtext">A curated summary of the best role matches.</p>
+                </div>
+            </section>
+            <main class="container">
+                <div class="empty-state">
+                    <h2 class="empty-state-title">No digest ready.</h2>
+                    <p class="empty-state-text">The daily summary feature is scheduled for implementation. You'll receive your first digest once matching logic is active.</p>
+                </div>
+            </main>
+        `
     },
     '/proof': {
-        title: 'Validation Proof',
-        subtext: 'This section will be built in the next step.'
+        render: () => `
+            <section class="context-header">
+                <div class="container">
+                    <h1 class="headline">Validation Proof</h1>
+                    <p class="subtext">This section will be used for artifact collection and verification.</p>
+                </div>
+            </section>
+            <main class="container">
+                <div class="card">
+                    <h2 class="card-title">Artifact Repository</h2>
+                    <p class="card-description">Development logs and test results will be presented here in future iterations.</p>
+                </div>
+            </main>
+        `
     }
 };
 
@@ -37,48 +130,18 @@ const navigateTo = (url) => {
 const router = async () => {
     const path = window.location.pathname;
     const route = routes[path] || {
-        title: 'Page Not Found',
-        subtext: 'The page you are looking for does not exist.',
-        isError: true
-    };
-
-    const container = document.getElementById('page-content');
-
-    if (route.isError) {
-        container.innerHTML = `
+        render: () => `
             <section class="error-page container">
-                <h1 class="headline">${route.title}</h1>
-                <p class="subtext">${route.subtext}</p>
+                <h1 class="headline">Page Not Found</h1>
+                <p class="subtext">The page you are looking for does not exist.</p>
                 <div style="margin-top: 40px;">
                     <a href="/" class="btn btn-primary" data-link>Return Home</a>
                 </div>
             </section>
-        `;
-    } else {
-        container.innerHTML = `
-            <section class="context-header">
-                <div class="container">
-                    <h1 class="headline">${route.title}</h1>
-                    <p class="subtext">${route.subtext}</p>
-                </div>
-            </section>
-            <main class="main-layout container">
-                <div class="primary-workspace">
-                    <div class="card">
-                        <h2 class="card-title">Coming Soon</h2>
-                        <p class="card-description">The infrastructure and features for the ${route.title} are scheduled for the next implementation phase.</p>
-                    </div>
-                </div>
-                <aside class="secondary-panel">
-                    <div class="panel-section">
-                        <h3 class="panel-title">Status</h3>
-                        <p class="panel-text">This route is part of the initial skeleton. Business logic will be injected here during the feature development step.</p>
-                    </div>
-                </aside>
-            </main>
-        `;
-    }
+        `
+    };
 
+    document.getElementById('page-content').innerHTML = route.render();
     updateActiveLinks();
 };
 
@@ -90,17 +153,32 @@ const updateActiveLinks = () => {
             link.classList.add('active');
         }
     });
+
+    // Handle home link highlighting if needed
+    const logoLink = document.querySelector('.app-logo-link');
+    if (logoLink) {
+        if (path === '/') {
+            logoLink.style.opacity = '1';
+        } else {
+            logoLink.style.opacity = '1';
+        }
+    }
 };
 
 document.addEventListener('DOMContentLoaded', () => {
     // Intercept clicks for routing
     document.body.addEventListener('click', e => {
-        if (e.target.matches('[data-link]')) {
+        const link = e.target.closest('[data-link]');
+        if (link) {
             e.preventDefault();
-            navigateTo(e.target.href);
+            navigateTo(link.getAttribute('href'));
             // Close mobile menu if open
-            document.getElementById('top-nav').classList.remove('active');
-            document.getElementById('menu-toggle').classList.remove('active');
+            const topNav = document.getElementById('top-nav');
+            const menuToggle = document.getElementById('menu-toggle');
+            if (topNav && menuToggle) {
+                topNav.classList.remove('active');
+                menuToggle.classList.remove('active');
+            }
         }
     });
 
