@@ -599,6 +599,100 @@ h4 {
     text-align: center;
 }
 
+/* DIGEST ENGINE UI */
+.digest-view {
+    max-width: 720px;
+    margin: 0 auto var(--space-5);
+}
+
+.digest-card {
+    background: #FFFFFF;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    margin-bottom: var(--space-3);
+}
+
+.digest-header {
+    padding: var(--space-4) var(--space-4) var(--space-3);
+    border-bottom: 2px solid var(--color-bg);
+    text-align: center;
+}
+
+.digest-headline {
+    font-size: 28px;
+    margin-bottom: 8px;
+}
+
+.digest-date {
+    font-size: 14px;
+    opacity: 0.6;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.digest-body {
+    padding: var(--space-2) 0;
+}
+
+.digest-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-bg);
+    transition: background-color var(--transition-speed);
+}
+
+.digest-item:last-child {
+    border-bottom: none;
+}
+
+.digest-item:hover {
+    background-color: var(--color-bg);
+}
+
+.digest-item-left {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.digest-item-score {
+    min-width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 800;
+    border-radius: 50%;
+}
+
+.digest-item-title {
+    font-size: 18px;
+    margin-bottom: 2px;
+}
+
+.digest-item-meta {
+    font-size: 13px;
+    opacity: 0.7;
+}
+
+.digest-footer {
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-bg);
+    text-align: center;
+    font-size: 12px;
+    opacity: 0.5;
+}
+
+.digest-actions-bar {
+    display: flex;
+    gap: var(--space-2);
+    justify-content: center;
+}
+
 /* PREFERENCES BANNER */
 .preferences-banner {
     background: rgba(139, 0, 0, 0.05);

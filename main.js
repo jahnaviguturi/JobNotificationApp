@@ -288,22 +288,92 @@ const routes = {
         }
     },
     '/digest': {
-        render: () => `
+        render: () => {
+            if (!preferences) {
+                return `
+                <section class="context-header">
+                    <div class="container">
+                        <h1 class="headline serif">Daily Digest</h1>
+                        <p class="subtext">A curated summary of the best matches found in the last 24 hours.</p>
+                    </div>
+                </section>
+                <main class="container">
+                    <div class="empty-state">
+                        <div class="empty-state-content">
+                            <h2 class="card-title serif">Preferences Required</h2>
+                            <p class="card-description">Set your preferences to generate a personalized digest of high-signal opportunities.</p>
+                            <a href="/settings" class="btn btn-primary" data-link style="margin-top: 24px;">Configure Settings</a>
+                        </div>
+                    </div>
+                </main>
+                `;
+            }
+
+            const today = new Date().toISOString().split('T')[0];
+            const digestKey = `jobTrackerDigest_${today}`;
+            const existingDigest = JSON.parse(localStorage.getItem(digestKey));
+
+            return `
             <section class="context-header">
                 <div class="container">
                     <h1 class="headline serif">Daily Digest</h1>
-                    <p class="subtext">A curated summary of the best matches found in the last 24 hours.</p>
+                    <p class="subtext">Precision-matched opportunities delivered every morning at 9AM.</p>
                 </div>
             </section>
             <main class="container">
-                <div class="empty-state">
-                    <div class="empty-state-content">
-                        <h2 class="card-title serif">Awaiting active tracking...</h2>
-                        <p class="card-description">Daily digests are generated based on your match scores. Set your preferences to enable high-signal alerts every morning at 9AM.</p>
-                    </div>
+                <div id="digest-container" class="digest-view">
+                    ${existingDigest ? renderDigestContent(existingDigest) : `
+                        <div class="empty-state">
+                            <div class="empty-state-content">
+                                <h2 class="card-title serif">Today's Digest</h2>
+                                <p class="card-description">Ready to discover your top 10 matches for ${new Date().toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}?</p>
+                                <button class="btn btn-primary" id="generate-digest" style="margin-top: 24px;">Generate Today's 9AM Digest (Simulated)</button>
+                                <p class="muted-note" style="margin-top: 16px; font-size: 12px; opacity: 0.6;">Demo Mode: Daily 9AM trigger simulated manually.</p>
+                            </div>
+                        </div>
+                    `}
                 </div>
             </main>
-        `
+            `;
+        },
+        afterRender: () => {
+            const genBtn = document.getElementById('generate-digest');
+            if (genBtn) {
+                genBtn.addEventListener('click', () => {
+                    const today = new Date().toISOString().split('T')[0];
+                    const digestKey = `jobTrackerDigest_${today}`;
+
+                    // Logic: Top 10 jobs by score desc, then posted days asc
+                    const scoredJobs = jobs.map(j => ({ ...j, matchScore: calculateMatchScore(j) }));
+                    const top10 = scoredJobs
+                        .filter(j => j.matchScore > 0)
+                        .sort((a, b) => b.matchScore - a.matchScore || a.postedDaysAgo - b.postedDaysAgo)
+                        .slice(0, 10);
+
+                    if (top10.length === 0) {
+                        document.getElementById('digest-container').innerHTML = `
+                            <div class="empty-state">
+                                <div class="empty-state-content">
+                                    <h2 class="card-title serif">No matching roles today.</h2>
+                                    <p class="card-description">We couldn't find any high-signal matches based on your current preferences. Check again tomorrow or adjust your settings.</p>
+                                    <a href="/settings" class="btn btn-secondary" data-link>Refine Preferences</a>
+                                </div>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    localStorage.setItem(digestKey, JSON.stringify(top10));
+                    document.getElementById('digest-container').innerHTML = renderDigestContent(top10);
+                    setupDigestActions(top10);
+                });
+            } else {
+                const today = new Date().toISOString().split('T')[0];
+                const digestKey = `jobTrackerDigest_${today}`;
+                const existingDigest = JSON.parse(localStorage.getItem(digestKey));
+                if (existingDigest) setupDigestActions(existingDigest);
+            }
+        }
     },
     '/proof': {
         render: () => `
@@ -550,6 +620,69 @@ const updateActiveLinks = () => {
             link.classList.add('active');
         }
     });
+};
+
+const renderDigestContent = (digestJobs) => {
+    const todayStr = new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+
+    const itemsHtml = digestJobs.map(job => `
+        <div class="digest-item">
+            <div class="digest-item-left">
+                <div class="digest-item-score ${getScoreColor(job.matchScore)}">${job.matchScore}%</div>
+                <div>
+                    <h4 class="digest-item-title serif">${job.title}</h4>
+                    <p class="digest-item-meta">${job.company} &bull; ${job.location} &bull; ${job.experience} Exp</p>
+                </div>
+            </div>
+            <a href="${job.applyUrl}" target="_blank" class="btn btn-secondary btn-sm">Apply</a>
+        </div>
+    `).join('');
+
+    return `
+        <div class="digest-card">
+            <div class="digest-header">
+                <h2 class="digest-headline serif">Top ${digestJobs.length} Jobs For You — 9AM Digest</h2>
+                <p class="digest-date">${todayStr}</p>
+            </div>
+            <div class="digest-body">
+                ${itemsHtml}
+            </div>
+            <div class="digest-footer">
+                <p>This digest was generated based on your personal preferences.</p>
+            </div>
+        </div>
+        <div class="digest-actions-bar">
+            <button class="btn btn-secondary" id="copy-digest">Copy Digest to Clipboard</button>
+            <button class="btn btn-primary" id="email-digest">Create Email Draft</button>
+        </div>
+    `;
+};
+
+const setupDigestActions = (digestJobs) => {
+    const copyBtn = document.getElementById('copy-digest');
+    const emailBtn = document.getElementById('email-digest');
+
+    const digestText = `Top ${digestJobs.length} Jobs For You — 9AM Digest (${new Date().toLocaleDateString()})\n\n` +
+        digestJobs.map((j, i) => `${i + 1}. ${j.title} at ${j.company} (${j.matchScore}% Match)\n   Location: ${j.location} | Apply: ${j.applyUrl}`).join('\n\n') +
+        `\n\nGenerated by Job Notification Tracker.`;
+
+    if (copyBtn) {
+        copyBtn.onclick = () => {
+            navigator.clipboard.writeText(digestText).then(() => {
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = 'Copied!';
+                setTimeout(() => copyBtn.textContent = originalText, 2000);
+            });
+        };
+    }
+
+    if (emailBtn) {
+        emailBtn.onclick = () => {
+            const subject = encodeURIComponent(`My 9AM Job Digest - ${new Date().toLocaleDateString()}`);
+            const body = encodeURIComponent(digestText);
+            window.location.href = `mailto:?subject=${subject}&body=${body}`;
+        };
+    }
 };
 
 document.addEventListener('DOMContentLoaded', () => {
