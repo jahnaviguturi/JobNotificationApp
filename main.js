@@ -1,14 +1,14 @@
 /**
- * Job Notification Tracker - SPA Router & Application Logic
+ * Job Notification Tracker - SPA Router & Design System Logic
  */
 
 const routes = {
     '/': {
         render: () => `
-            <section class="hero container">
-                <h1 class="headline">Stop Missing The Right Jobs.</h1>
-                <p class="subtext">Precision-matched job discovery delivered daily at 9AM.</p>
-                <div class="cta-area">
+            <section class="landing-hero container">
+                <h1 class="hero-headline">Stop Missing The Right Jobs.</h1>
+                <p class="hero-subtext">Precision-matched job discovery delivered daily at 9AM.</p>
+                <div class="hero-actions">
                     <a href="/settings" class="btn btn-primary" data-link>Start Tracking</a>
                 </div>
             </section>
@@ -19,13 +19,17 @@ const routes = {
             <section class="context-header">
                 <div class="container">
                     <h1 class="headline">Dashboard</h1>
-                    <p class="subtext">Your personalized job matches and tracking overview.</p>
+                    <p class="subtext">Your career overview and active tracking status.</p>
                 </div>
             </section>
-            <main class="container">
-                <div class="empty-state">
-                    <h2 class="empty-state-title">No jobs yet.</h2>
-                    <p class="empty-state-text">In the next step, you will load a realistic dataset to see matches here.</p>
+            <main class="main-layout container">
+                <div class="primary-workspace">
+                    <div class="empty-state">
+                        <div class="empty-state-content">
+                            <h2 class="card-title">No jobs yet.</h2>
+                            <p class="card-description">In the next step, you will load a realistic dataset.</p>
+                        </div>
+                    </div>
                 </div>
             </main>
         `
@@ -35,40 +39,56 @@ const routes = {
             <section class="context-header">
                 <div class="container">
                     <h1 class="headline">Settings</h1>
-                    <p class="subtext">Configure your search preferences and notification parameters.</p>
+                    <p class="subtext">Refine your preferences to improve notification accuracy.</p>
                 </div>
             </section>
-            <main class="container">
-                <div class="card">
-                    <h2 class="card-title">Preference Profile</h2>
-                    <div class="settings-grid">
-                        <div class="form-group form-group-full">
-                            <label for="role-keywords">Role Keywords</label>
-                            <input type="text" id="role-keywords" class="input-base" placeholder="e.g. Senior Frontend Engineer, Product Designer">
-                        </div>
-                        <div class="form-group">
-                            <label for="location">Preferred Locations</label>
-                            <input type="text" id="location" class="input-base" placeholder="e.g. San Francisco, Remote">
-                        </div>
-                        <div class="form-group">
-                            <label for="work-mode">Mode</label>
-                            <select id="work-mode" class="input-base">
-                                <option value="remote">Remote</option>
-                                <option value="hybrid">Hybrid</option>
-                                <option value="onsite">Onsite</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="experience">Experience Level</label>
-                            <select id="experience" class="input-base">
-                                <option value="entry">Entry Level</option>
-                                <option value="mid">Mid Level</option>
-                                <option value="senior">Senior Level</option>
-                                <option value="lead">Lead / Principal</option>
-                            </select>
+            <main class="main-layout container">
+                <div class="primary-workspace">
+                    <div class="card">
+                        <h2 class="card-title">Search Preferences</h2>
+                        <div class="settings-form">
+                            <div class="form-group">
+                                <label for="role-keywords">Role Keywords</label>
+                                <input type="text" id="role-keywords" placeholder="e.g. Senior Frontend Engineer, UI Designer" class="input-base">
+                            </div>
+                            <div class="form-group">
+                                <label for="locations">Preferred Locations</label>
+                                <input type="text" id="locations" placeholder="e.g. New York, London, Remote" class="input-base">
+                            </div>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="work-mode">Mode</label>
+                                    <select id="work-mode" class="input-base">
+                                        <option value="">Select mode...</option>
+                                        <option value="remote">Remote</option>
+                                        <option value="hybrid">Hybrid</option>
+                                        <option value="onsite">Onsite</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exp-level">Experience Level</label>
+                                    <select id="exp-level" class="input-base">
+                                        <option value="">Select level...</option>
+                                        <option value="entry">Entry Level</option>
+                                        <option value="mid">Mid Level</option>
+                                        <option value="senior">Senior</option>
+                                        <option value="lead">Lead / Principal</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div style="margin-top: 24px;">
+                                <button class="btn btn-primary" disabled>Save Preferences</button>
+                                <span class="muted-info">Logic implementation in next step.</span>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <aside class="secondary-panel">
+                    <div class="panel-section">
+                        <h3 class="panel-title">Why this matters?</h3>
+                        <p class="panel-text">Our matching algorithm uses these parameters to filter through thousands of global job postings daily.</p>
+                    </div>
+                </aside>
             </main>
         `
     },
@@ -77,13 +97,17 @@ const routes = {
             <section class="context-header">
                 <div class="container">
                     <h1 class="headline">Saved Jobs</h1>
-                    <p class="subtext">Your collection of high-interest opportunities.</p>
+                    <p class="subtext">Your shortlist of potential opportunities.</p>
                 </div>
             </section>
-            <main class="container">
-                <div class="empty-state">
-                    <h2 class="empty-state-title">Your collection is empty.</h2>
-                    <p class="empty-state-text">Jobs you save from the dashboard will appear here for later review.</p>
+            <main class="main-layout container">
+                <div class="primary-workspace">
+                    <div class="empty-state">
+                        <div class="empty-state-content">
+                            <h2 class="card-title">Clear as a blank canvas.</h2>
+                            <p class="card-description">Jobs you save during your search will appear here for quick access. This features premium tracking features.</p>
+                        </div>
+                    </div>
                 </div>
             </main>
         `
@@ -93,13 +117,17 @@ const routes = {
             <section class="context-header">
                 <div class="container">
                     <h1 class="headline">Daily Digest</h1>
-                    <p class="subtext">A curated summary of the best role matches.</p>
+                    <p class="subtext">A curated summary of the best matches found in the last 24 hours.</p>
                 </div>
             </section>
-            <main class="container">
-                <div class="empty-state">
-                    <h2 class="empty-state-title">No digest ready.</h2>
-                    <p class="empty-state-text">The daily summary feature is scheduled for implementation. You'll receive your first digest once matching logic is active.</p>
+            <main class="main-layout container">
+                <div class="primary-workspace">
+                    <div class="empty-state">
+                        <div class="empty-state-content">
+                            <h2 class="card-title">The engine is warming up.</h2>
+                            <p class="card-description">Your first daily summary will be generated once the data engine is active. Look forward to high-signal alerts every morning at 9AM.</p>
+                        </div>
+                    </div>
                 </div>
             </main>
         `
@@ -109,15 +137,9 @@ const routes = {
             <section class="context-header">
                 <div class="container">
                     <h1 class="headline">Validation Proof</h1>
-                    <p class="subtext">This section will be used for artifact collection and verification.</p>
+                    <p class="subtext">This section will be built in the next step.</p>
                 </div>
             </section>
-            <main class="container">
-                <div class="card">
-                    <h2 class="card-title">Artifact Repository</h2>
-                    <p class="card-description">Development logs and test results will be presented here in future iterations.</p>
-                </div>
-            </main>
         `
     }
 };
@@ -141,8 +163,11 @@ const router = async () => {
         `
     };
 
-    document.getElementById('page-content').innerHTML = route.render();
+    const container = document.getElementById('page-content');
+    container.innerHTML = route.render ? route.render() : '';
+
     updateActiveLinks();
+    window.scrollTo(0, 0);
 };
 
 const updateActiveLinks = () => {
@@ -153,32 +178,18 @@ const updateActiveLinks = () => {
             link.classList.add('active');
         }
     });
-
-    // Handle home link highlighting if needed
-    const logoLink = document.querySelector('.app-logo-link');
-    if (logoLink) {
-        if (path === '/') {
-            logoLink.style.opacity = '1';
-        } else {
-            logoLink.style.opacity = '1';
-        }
-    }
 };
 
 document.addEventListener('DOMContentLoaded', () => {
     // Intercept clicks for routing
     document.body.addEventListener('click', e => {
-        const link = e.target.closest('[data-link]');
-        if (link) {
+        if (e.target.matches('[data-link]') || e.target.closest('[data-link]')) {
+            const link = e.target.matches('[data-link]') ? e.target : e.target.closest('[data-link]');
             e.preventDefault();
             navigateTo(link.getAttribute('href'));
             // Close mobile menu if open
-            const topNav = document.getElementById('top-nav');
-            const menuToggle = document.getElementById('menu-toggle');
-            if (topNav && menuToggle) {
-                topNav.classList.remove('active');
-                menuToggle.classList.remove('active');
-            }
+            document.getElementById('top-nav').classList.remove('active');
+            document.getElementById('menu-toggle').classList.remove('active');
         }
     });
 
