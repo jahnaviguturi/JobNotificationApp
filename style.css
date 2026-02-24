@@ -599,6 +599,160 @@ h4 {
     text-align: center;
 }
 
+/* JOB STATUS TRACKING */
+.status-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.status-not-applied {
+    background: rgba(17, 17, 17, 0.05);
+    color: var(--color-text-primary);
+    opacity: 0.7;
+}
+
+.status-applied {
+    background: rgba(0, 102, 204, 0.1);
+    color: #0066CC;
+}
+
+.status-rejected {
+    background: rgba(139, 0, 0, 0.1);
+    color: var(--color-accent);
+}
+
+.status-selected {
+    background: rgba(80, 125, 80, 0.1);
+    color: var(--color-success);
+}
+
+.status-actions {
+    display: flex;
+    gap: 4px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--color-border);
+}
+
+.btn-status {
+    flex: 1;
+    height: 32px;
+    padding: 0 8px;
+    font-size: 11px;
+    font-weight: 600;
+    border: 1px solid var(--color-border);
+    background: transparent;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all var(--transition-speed);
+}
+
+.btn-status:hover {
+    border-color: var(--color-text-primary);
+}
+
+.btn-status.active[data-status="Applied"] {
+    background: #0066CC;
+    color: white;
+    border-color: #0066CC;
+}
+
+.btn-status.active[data-status="Rejected"] {
+    background: var(--color-accent);
+    color: white;
+    border-color: var(--color-accent);
+}
+
+.btn-status.active[data-status="Selected"] {
+    background: var(--color-success);
+    color: white;
+    border-color: var(--color-success);
+}
+
+/* TOAST NOTIFICATION */
+.toast-container {
+    position: fixed;
+    bottom: var(--space-3);
+    right: var(--space-3);
+    z-index: 3000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toast {
+    background: #111111;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    animation: slideIn 0.3s ease-out, fadeOut 0.3s ease-in 2.7s forwards;
+    pointer-events: none;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+/* RECENT UPDATES */
+.recent-updates {
+    margin-top: var(--space-4);
+}
+
+.update-card {
+    background: #FFFFFF;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: var(--space-3);
+    margin-bottom: var(--space-2);
+}
+
+.update-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.update-title {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.update-date {
+    font-size: 12px;
+    opacity: 0.5;
+}
+
+.update-detail {
+    font-size: 14px;
+    opacity: 0.7;
+}
+
 /* DIGEST ENGINE UI */
 .digest-view {
     max-width: 720px;

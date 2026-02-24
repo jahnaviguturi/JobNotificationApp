@@ -6,6 +6,8 @@ import { jobs } from './data.js';
 // --- INITIALIZATION ---
 let savedJobs = JSON.parse(localStorage.getItem('savedJobs')) || [];
 let preferences = JSON.parse(localStorage.getItem('jobTrackerPreferences')) || null;
+let jobStatuses = JSON.parse(localStorage.getItem('jobTrackerStatus')) || {};
+let statusHistory = JSON.parse(localStorage.getItem('jobTrackerStatusHistory')) || [];
 let showOnlyMatches = false;
 
 // --- MATCH ENGINE ---
@@ -161,6 +163,13 @@ const routes = {
                             <option value="score">Match Score</option>
                             <option value="salary">Salary (High)</option>
                         </select>
+                        <select id="filter-status" class="input-base filter-group">
+                            <option value="All">All Statuses</option>
+                            <option value="Not Applied">Not Applied</option>
+                            <option value="Applied">Applied</option>
+                            <option value="Rejected">Rejected</option>
+                            <option value="Selected">Selected</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -313,6 +322,23 @@ const routes = {
             const digestKey = `jobTrackerDigest_${today}`;
             const existingDigest = JSON.parse(localStorage.getItem(digestKey));
 
+            const historyHtml = statusHistory.length > 0
+                ? `<div class="recent-updates">
+                    <h2 class="card-title serif">Recent Status Updates</h2>
+                    ${statusHistory.slice(-5).reverse().map(update => `
+                        <div class="update-card">
+                            <div class="update-header">
+                                <span class="update-title">${update.jobTitle}</span>
+                                <span class="update-date">${update.date}</span>
+                            </div>
+                            <div class="update-detail">
+                                ${update.company} &bull; <span class="status-badge status-${update.status.toLowerCase().replace(' ', '-')}">${update.status}</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>`
+                : '';
+
             return `
             <section class="context-header">
                 <div class="container">
@@ -332,6 +358,7 @@ const routes = {
                             </div>
                         </div>
                     `}
+                    ${historyHtml}
                 </div>
             </main>
             `;
@@ -407,13 +434,18 @@ const renderJobs = (jobsToRender, containerId = 'job-list') => {
     container.innerHTML = jobsToRender.map(job => {
         const score = calculateMatchScore(job);
         const scoreClass = getScoreColor(score);
+        const status = jobStatuses[job.id] || 'Not Applied';
+        const statusClass = `status-${status.toLowerCase().replace(' ', '-')}`;
 
         return `
         <article class="job-card">
             <div class="job-card-header">
                 <div class="job-header-top">
                     <div class="job-source-badge">${job.source}</div>
-                    ${preferences ? `<div class="match-badge ${scoreClass}">${score}% Match</div>` : ''}
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <span class="status-badge ${statusClass}">${status}</span>
+                        ${preferences ? `<div class="match-badge ${scoreClass}">${score}% Match</div>` : ''}
+                    </div>
                 </div>
                 <h3 class="job-title serif">${job.title}</h3>
                 <div class="job-company">${job.company}</div>
@@ -434,6 +466,11 @@ const renderJobs = (jobsToRender, containerId = 'job-list') => {
                 </button>
                 <a href="${job.applyUrl}" target="_blank" class="btn btn-primary btn-sm" style="grid-column: span 2; margin-top: 8px;">Apply Now</a>
             </div>
+            <div class="status-actions">
+                <button class="btn-status ${status === 'Applied' ? 'active' : ''}" data-status="Applied" onclick="window.updateJobStatus('${job.id}', 'Applied')">Applied</button>
+                <button class="btn-status ${status === 'Rejected' ? 'active' : ''}" data-status="Rejected" onclick="window.updateJobStatus('${job.id}', 'Rejected')">Rejected</button>
+                <button class="btn-status ${status === 'Selected' ? 'active' : ''}" data-status="Selected" onclick="window.updateJobStatus('${job.id}', 'Selected')">Selected</button>
+            </div>
         </article>
     `}).join('');
 };
@@ -445,6 +482,7 @@ const handleFiltering = () => {
     const mode = document.getElementById('filter-mode');
     const source = document.getElementById('filter-source');
     const sort = document.getElementById('filter-sort');
+    const status = document.getElementById('filter-status');
     const toggle = document.getElementById('match-threshold-toggle');
 
     if (!search) return;
@@ -454,6 +492,7 @@ const handleFiltering = () => {
     const modeVal = mode.value;
     const sourceVal = source.value;
     const sortVal = sort.value;
+    const statusVal = status ? status.value : 'All';
     const matchesOnly = toggle ? toggle.checked : false;
 
     let filtered = jobs.filter(job => {
@@ -462,16 +501,19 @@ const handleFiltering = () => {
         const matchesMode = !modeVal || job.mode === modeVal;
         const matchesSource = !sourceVal || job.source === sourceVal;
 
+        const jobStatus = jobStatuses[job.id] || 'Not Applied';
+        const matchesStatus = statusVal === 'All' || jobStatus === statusVal;
+
         const score = calculateMatchScore(job);
         const meetsThreshold = !matchesOnly || !preferences || score >= (preferences.minMatchScore || 0);
 
-        return matchesSearch && matchesLoc && matchesMode && matchesSource && meetsThreshold;
+        return matchesSearch && matchesLoc && matchesMode && matchesSource && matchesStatus && meetsThreshold;
     });
 
     // Sorting
     filtered.sort((a, b) => {
         if (sortVal === 'latest') return a.postedDaysAgo - b.postedDaysAgo;
-        if (sortVal === 'score') return calculateMatchScore(b) - calculateMatchScore(a);
+        if (sortVal === 'score') return (calculateMatchScore(b)) - (calculateMatchScore(a));
         if (sortVal === 'salary') return extractSalary(b.salaryRange) - extractSalary(a.salaryRange);
         return 0;
     });
@@ -480,7 +522,7 @@ const handleFiltering = () => {
 };
 
 const setupDashboardEvents = () => {
-    const inputs = ['filter-search', 'filter-location', 'filter-mode', 'filter-source', 'filter-sort', 'match-threshold-toggle'];
+    const inputs = ['filter-search', 'filter-location', 'filter-mode', 'filter-source', 'filter-sort', 'filter-status', 'match-threshold-toggle'];
     inputs.forEach(id => {
         const el = document.getElementById(id);
         if (el) el.addEventListener('input', () => {
@@ -683,6 +725,62 @@ const setupDigestActions = (digestJobs) => {
             window.location.href = `mailto:?subject=${subject}&body=${body}`;
         };
     }
+};
+
+window.updateJobStatus = (jobId, newStatus) => {
+    const job = jobs.find(j => j.id === jobId);
+    const currentStatus = jobStatuses[jobId] || 'Not Applied';
+
+    // Toggle if clicking active state
+    const targetStatus = currentStatus === newStatus ? 'Not Applied' : newStatus;
+
+    jobStatuses[jobId] = targetStatus;
+    localStorage.setItem('jobTrackerStatus', JSON.stringify(jobStatuses));
+
+    // Add to history
+    if (targetStatus !== 'Not Applied') {
+        const update = {
+            jobId,
+            jobTitle: job.title,
+            company: job.company,
+            status: targetStatus,
+            date: new Date().toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+        };
+        statusHistory.push(update);
+        localStorage.setItem('jobTrackerStatusHistory', JSON.stringify(statusHistory));
+    }
+
+    showToast(`Status updated: ${targetStatus}`);
+
+    // Re-render
+    const path = window.location.pathname;
+    if (path === '/dashboard') {
+        handleFiltering();
+    } else if (path === '/saved') {
+        const filteredSaved = jobs.filter(j => savedJobs.includes(j.id));
+        renderJobs(filteredSaved, 'saved-job-list');
+    } else {
+        router();
+    }
+};
+
+const showToast = (message) => {
+    let container = document.querySelector('.toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.className = 'toast-container';
+        document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = message;
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.remove();
+        if (container.childNodes.length === 0) container.remove();
+    }, 3000);
 };
 
 document.addEventListener('DOMContentLoaded', () => {
