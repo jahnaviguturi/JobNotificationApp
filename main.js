@@ -8,6 +8,7 @@ let savedJobs = JSON.parse(localStorage.getItem('savedJobs')) || [];
 let preferences = JSON.parse(localStorage.getItem('jobTrackerPreferences')) || null;
 let jobStatuses = JSON.parse(localStorage.getItem('jobTrackerStatus')) || {};
 let statusHistory = JSON.parse(localStorage.getItem('jobTrackerStatusHistory')) || [];
+let testStatus = JSON.parse(localStorage.getItem('jobTrackerTestStatus')) || Array(10).fill(false);
 let showOnlyMatches = false;
 
 // --- MATCH ENGINE ---
@@ -411,6 +412,93 @@ const routes = {
                 </div>
             </section>
         `
+    },
+    '/jt/07-test': {
+        render: () => {
+            const passed = testStatus.filter(s => s).length;
+            const items = [
+                { label: "Preferences persist after refresh", hint: "Set preferences, refresh page, check Settings." },
+                { label: "Match score calculates correctly", hint: "Check score badge values vs preferences." },
+                { label: "Show only matches toggle works", hint: "Toggle on/off in dashboard and check results." },
+                { label: "Save job persists after refresh", hint: "Save a job, refresh, check Saved tab." },
+                { label: "Apply opens in new tab", hint: "Click Apply button, ensure new tab opens." },
+                { label: "Status update persists after refresh", hint: "Update status, refresh, check badge." },
+                { label: "Status filter works correctly", hint: "Filter by status and check matching jobs." },
+                { label: "Digest generates top 10 by score", hint: "Generate digest, verify scores are highest." },
+                { label: "Digest persists for the day", hint: "Generate digest, refresh, ensure same jobs show." },
+                { label: "No console errors on main pages", hint: "Open DevTools and check for red errors." }
+            ];
+
+            return `
+            <section class="context-header">
+                <div class="container">
+                    <h1 class="headline serif">Testing & Quality Assurance</h1>
+                    <p class="subtext">Verify core functionality before final deployment.</p>
+                </div>
+            </section>
+            <main class="container">
+                <div class="test-summary">
+                    <div class="test-counter">Tests Passed: ${passed} / 10</div>
+                    ${passed < 10 ?
+                    `<p class="test-warning">⚠️ Resolve all issues before shipping.</p>` :
+                    `<p class="test-success">✅ System ready for deployment.</p>`
+                }
+                </div>
+                
+                <div class="checklist-card">
+                    ${items.map((item, i) => `
+                        <div class="checklist-row">
+                            <div class="checklist-info">
+                                <input type="checkbox" class="checklist-checkbox" id="test-${i}" ${testStatus[i] ? 'checked' : ''} onchange="window.updateTestStatus(${i}, this.checked)">
+                                <span class="checklist-label">${item.label}</span>
+                                <span class="tooltip-trigger" title="${item.hint}">(How to test)</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+
+                <div style="margin-top: 32px; text-align: center;">
+                    <button class="btn btn-secondary" onclick="window.resetTests()">Reset Test Status</button>
+                    ${passed === 10 ? `<a href="/jt/08-ship" class="btn btn-primary" data-link style="margin-left: 16px;">Go to Ship Lock</a>` : ''}
+                </div>
+            </main>
+            `;
+        }
+    },
+    '/jt/08-ship': {
+        render: () => {
+            const allPassed = testStatus.every(s => s);
+            if (!allPassed) {
+                return `
+                <main class="container">
+                    <div class="lock-screen">
+                        <span class="lock-icon">🔒</span>
+                        <h1 class="headline serif">Shipment Locked</h1>
+                        <p class="subtext">Complete all 10 checklist items in the Test Route before shipping.</p>
+                        <a href="/jt/07-test" class="btn btn-primary" data-link style="margin-top: 24px;">Return to Tests</a>
+                    </div>
+                </main>
+                `;
+            }
+
+            return `
+            <section class="context-header">
+                <div class="container">
+                    <h1 class="headline serif">Ship Ready</h1>
+                    <p class="subtext">System validation complete. Ready for production deployment.</p>
+                </div>
+            </section>
+            <main class="container">
+                <div class="card" style="text-align: center; padding: 60px;">
+                    <h2 class="serif" style="font-size: 32px; color: var(--color-success);">Ready for Launch</h2>
+                    <p style="margin-top: 16px; opacity: 0.7;">All verification artifacts are logged. The system is stable and persistent.</p>
+                    <div style="margin-top: 40px;">
+                        <button class="btn btn-primary" onclick="alert('Deployment sequence simulated!')">Push to Production</button>
+                    </div>
+                </div>
+            </main>
+            `;
+        }
     }
 };
 
@@ -781,6 +869,18 @@ const showToast = (message) => {
         toast.remove();
         if (container.childNodes.length === 0) container.remove();
     }, 3000);
+};
+
+window.updateTestStatus = (index, value) => {
+    testStatus[index] = value;
+    localStorage.setItem('jobTrackerTestStatus', JSON.stringify(testStatus));
+    router(); // Re-render to update counter and locked state
+};
+
+window.resetTests = () => {
+    testStatus = Array(10).fill(false);
+    localStorage.setItem('jobTrackerTestStatus', JSON.stringify(testStatus));
+    router();
 };
 
 document.addEventListener('DOMContentLoaded', () => {
